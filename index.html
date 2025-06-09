@@ -1,0 +1,433 @@
+<!-- ================
+  $LOVE • Pump.fun 
+===================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8">
+<title>$LOVE • Pump.fun</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="$LOVE — Fair-launch on Pump.fun • LP locked • 0 % tax • Spread Love">
+<link rel="icon" href="assets/love.ico">
+<meta name="theme-color" content="#ff3ad1">
+<link rel="prefetch" href="assets/heart.json">
+<!-- CDNs -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.0.0-beta.23/dist/lenis.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+<style>
+/******** TOKENS */
+:root{
+  --pink:#ff3ad1;--fuchsia:#fe7cf5;--light:#ffd9ff;--deep:#12001e;--glass:rgba(255,255,255,.1);
+  --border:rgba(255,255,255,.22);--rad:1.6rem;--shadow:0 0 .9rem rgba(0,0,0,.4);
+}
+[data-theme="light"]{--deep:#faf7ff;--glass:rgba(0,0,0,.06);--border:rgba(0,0,0,.08)}
+[data-theme="disco"]{--deep:#110018;background:conic-gradient(from .3turn,var(--pink),var(--fuchsia),#3f00ff,var(--pink))}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:Poppins,system-ui,sans-serif;min-height:100vh;overflow-x:hidden;background:var(--deep);
+  color:#fff;padding-top:3.1rem;-webkit-font-smoothing:antialiased;transition:background .4s ease}
+[data-theme="light"] body{color:#211}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/******** LOADER */
+#loader{position:fixed;inset:0;display:grid;place-items:center;background:#000;z-index:999}
+.spinner{width:72px;aspect-ratio:1;border-radius:50%;border:6px solid var(--pink);
+  border-top-color:transparent;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+/******** HYPE-BAR */
+#hype{position:fixed;inset:0 0 auto;display:flex;gap:1.1rem;justify-content:center;align-items:center;
+  padding:.55rem 1.3rem;font-size:.9rem;z-index:70;background:#0008;backdrop-filter:blur(10px)}
+#hype b{font-weight:700;color:var(--pink)}
+/******** NAV */
+nav{position:fixed;bottom:1.3rem;left:50%;transform:translateX(-50%);display:flex;gap:.7rem;z-index:70}
+nav button{inline-size:2.8rem;aspect-ratio:1;border-radius:50%;border:none;cursor:pointer;
+  display:grid;place-items:center;font-size:1.2rem;color:#fff;background:var(--glass);backdrop-filter:blur(6px)}
+nav button:hover{transform:scale(1.1)}
+/******** CANVAS BACKGROUND */
+#space{position:fixed;inset:0;z-index:-2}
+/******** FLOATING HEARTS & EMOJIS */
+.heart{position:absolute;width:36px;animation:float 12s linear infinite}
+@keyframes float{0%{transform:translateY(110vh) scale(.6)}100%{transform:translateY(-110vh) scale(1)}}
+.emoji{position:absolute;font-size:3rem;animation:wiggle 4s ease-in-out infinite alternate}
+@keyframes wiggle{to{transform:translateY(-14px) rotate(6deg)}}
+/******** SECTIONS */
+main{scroll-snap-type:y mandatory;transform-style:preserve-3d}
+section{min-block-size:100svh;padding:clamp(3rem,10vw,7rem) 1.9rem;display:flex;
+  align-items:center;justify-content:center;text-align:center;position:relative;scroll-snap-align:start}
+h1{font-size:clamp(3.5rem,9vw,7rem);font-weight:900;
+  background:linear-gradient(45deg,var(--pink),var(--fuchsia));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 1.2rem var(--pink));letter-spacing:.03em}
+h2{font-size:clamp(1.9rem,5vw,3.2rem);font-weight:800;
+  background:linear-gradient(45deg,var(--fuchsia),var(--light));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem}
+p,li{font-size:clamp(.95rem,.45vw+1rem,1.25rem);line-height:1.6}
+.btn{display:inline-block;padding:1rem 3.3rem;border-radius:50rem;background:var(--pink);
+  color:#fff;font-weight:600;box-shadow:0 0 1rem var(--pink);border:none;cursor:pointer;transition:.2s transform;text-decoration:none}
+.btn:hover{transform:translateY(-5px) scale(1.07)}
+.btn.alt{background:#fff;color:var(--pink);box-shadow:none}
+/******** HERO */
+.hero{display:grid;gap:2.8rem;max-inline-size:1280px}
+@container hero (min-width:680px){.hero{grid-template-columns:1fr 1fr;align-items:center}}
+.lottie{inline-size:clamp(180px,34vw,420px);margin-inline:auto}
+.actions{display:flex;flex-direction:column;gap:1.2rem;margin-top:2.5rem}
+.timer{display:flex;gap:.6rem;justify-content:center;font-family:monospace;
+  font-size:clamp(1.2rem,4vw,2.1rem)}
+.timer span{background:var(--glass);padding:.45rem .85rem;border-radius:.65rem;min-width:2ch}
+/******** GRID & CARDS */
+.grid{display:grid;gap:1.7rem;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));max-inline-size:1080px;margin-inline:auto}
+.card{background:var(--glass);border:1px solid var(--border);backdrop-filter:blur(6px);
+  border-radius:var(--rad);padding:1.8rem 1.2rem;box-shadow:var(--shadow);transition:.35s transform}
+.card:hover{transform:perspective(900px) rotateY(14deg) rotateX(8deg) translateY(-6px)}
+.card img{inline-size:78px;margin-block-end:1rem}
+/******** CHART */
+.chartbox{inline-size:100%;max-inline-size:880px;margin-inline:auto;border-radius:var(--rad);
+  overflow:hidden;box-shadow:var(--shadow);aspect-ratio:16/9}
+/******** SLOT GAME */
+.slot{display:flex;gap:.7rem;justify-content:center;margin-top:2.4rem;flex-wrap:wrap}
+.reel{inline-size:65px;aspect-ratio:1;border-radius:.7rem;background:var(--glass);backdrop-filter:blur(6px);
+  border:1px solid var(--border);display:grid;place-items:center;font-size:2rem;color:#fff;transition:.14s}
+.win{animation:pulse .9s ease-in-out 3}@keyframes pulse{50%{transform:scale(1.25)}}
+#spin{margin-top:1.2rem}
+/******** FOOTER FORM */
+footer{padding:4rem 1rem;text-align:center;font-size:.9rem;opacity:.75}
+.signup{display:flex;gap:.6rem;justify-content:center;margin-top:1.1rem;flex-wrap:wrap}
+.signup input{padding:.95rem 1.2rem;border-radius:50px;border:none;width:240px;max-width:90%}
+.signup button{padding:.95rem 1.6rem;border:none;border-radius:50px;background:var(--pink);color:#fff;font-weight:600}
+/******** MEDIA */
+@media(max-width:680px){
+  .grid{grid-template-columns:1fr}
+  .lottie{inline-size:190px;margin-inline:auto}
+  h1{font-size:10vw}
+}
+@media(max-width:320px){
+  section{padding:2.1rem .8rem}
+  .hero{grid-template-columns:1fr}
+  .lottie{inline-size:150px}
+  .btn{padding:.9rem 2.2rem;font-size:.95rem}
+  h1{font-size:11vw}
+  p,li{font-size:.9rem}
+}
+@media(min-width:1500px){
+  .hero{gap:3.4rem}
+  h1{font-size:6vw}
+  .lottie{inline-size:460px}
+  .grid{gap:2.2rem}
+}
+
+/* ---------- LIGHT THEME FIXES ---------- */
+[data-theme="light"] nav button,
+[data-theme="light"] .emoji {color:#211;}
+[data-theme="light"] .btn.alt {background:var(--pink);color:#fff;}
+[data-theme="light"] .hero   p,
+[data-theme="light"] .timer  span,
+[data-theme="light"] #holders,
+[data-theme="light"] footer p,
+[data-theme="light"] .signup input::placeholder { color:#222; }
+[data-theme="light"] .card   h3,
+[data-theme="light"] .card   p  { color:#222; }
+[data-theme="light"] section:nth-of-type(6) p { color:#222; }
+[data-theme="light"] .signup input{ color:#222; }
+[data-theme="light"] .timer span{ background:rgba(0,0,0,.07); }
+[data-theme="light"] section:nth-of-type(6) p { color:#222; }
+[data-theme="light"] footer h3 { color:#222; }
+[data-theme="light"] section:nth-of-type(5) p { color:#222; }
+</style>
+</head>
+<body data-theme="dark">
+<!-- Loader -->
+<div id="loader"><div class="spinner"></div></div>
+
+<!-- WebGL starfield -->
+<canvas id="space"></canvas>
+
+<!-- Hype bar -->
+<div id="hype"><span>Price <b id="price">--</b>$</span><span>LP <b id="lp">--</b>$</span><span>Holders <b id="liveHolders">--</b></span></div>
+
+<!-- Floating hearts & emojis -->
+<img src="assets/heart1.png" class="heart" style="left:12%;animation-duration:12s">
+<img src="assets/heart2.png" class="heart" style="left:78%;animation-duration:14s;animation-delay:2s">
+<img src="assets/heart3.png" class="heart" style="left:48%;animation-duration:13s;animation-delay:4s">
+<span class="emoji" style="top:18%;left:10%">💕</span>
+<span class="emoji" style="top:70%;left:84%">💸</span>
+<span class="emoji" style="top:46%;left:50%">🚀</span>
+
+<!-- Nav & theme -->
+<nav>
+  <button id="themeBtn" title="Theme">☾</button>
+  <button onclick="lenis.scrollTo('#hero')" title="Top">↑</button>
+  <button onclick="lenis.scrollTo('#cta')"  title="Buy">🚀</button>
+</nav>
+
+<main id="scroll">
+  <!-- HERO -->
+  <section id="hero"><div class="glow" style="--speed:.3"></div>
+    <div class="hero">
+    <div>
+        <h1>$LOVE</h1>
+        <p style="font-size:clamp(1.25rem,4.5vw,2.1rem);margin-top:.9rem">Buy • Trust • Spread Love</p>
+        <div class="actions">
+            <a id="buyBtn" href="https://pump.fun/" class="btn" target="_blank">Launch on Pump.fun</a>
+            <div class="timer"><span id="d">--</span>d <span id="h">--</span>h <span id="m">--</span>m <span
+                    id="s">--</span>s</div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
+                <a class="btn alt" download="love_launch.ics"
+                    href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:20250731T170000Z%0ASUMMARY:$LOVE Fair-Launch%0AEND:VEVENT%0AEND:VCALENDAR">
+                    Calendar</a>
+                
+                <a class="btn" style="background:#7755ff" href="phantom://app/ul/browse/pump.fun">Phantom</a>
+
+                <!-- Telegram -->
+                <a class="btn" style="background:#0088cc"
+                   href="https://t.me/lovelyportal" target="_blank">Telegram</a>
+
+                <!-- X -->
+                <a class="btn" style="background:#000"
+                   href="https://x.com/coinoflove" target="_blank">X</a>
+
+                <a class="btn" style="background:var(--fuchsia)"
+                    href="https://twitter.com/intent/tweet?text=I%20just%20aped%20%24LOVE%20on%20Pump.fun%20%F0%9F%9A%80"
+                    target="_blank">Share</a>
+            </div>
+        </div>
+    </div>
+      <lottie-player class="lottie" src="assets/json/heart.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+  </section>
+
+  <!-- HOW TO BUY -->
+  <section><div class="glow" style="--speed:.25"></div>
+    <div>
+      <h2>How to buy</h2>
+      <div class="grid">
+        <div class="card"><img src="assets/step1.png"><h3>Wallet</h3><p>Phantom / Backpack</p></div>
+        <div class="card"><img src="assets/step2.png"><h3>Fund SOL</h3><p>Buy & deposit</p></div>
+        <div class="card"><img src="assets/step3.png"><h3>Ape</h3><p>Tap BUY on Pump.fun</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERKS + slot -->
+  <section><div class="glow" style="--speed:.2"></div>
+    <div>
+      <h2>Perks</h2>
+      <div class="grid">
+        <div class="card"><img src="assets/perk1.png"><p>0 % tax</p></div>
+        <div class="card"><img src="assets/perk2.png"><p>Fair-launch</p></div>
+        <div class="card"><img src="assets/perk3.png"><p>LP locked</p></div>
+        <div class="card"><img src="assets/perk4.png"><p>Charity 5 %</p></div>
+      </div>
+      <div class="slot" aria-label="Mini-slot game">
+        <div class="reel">💖</div><div class="reel">🚀</div><div class="reel">💸</div>
+      </div>
+      <button id="spin" class="btn alt">Spin & Win</button>
+    </div>
+  </section>
+
+  <!-- LIVE CHART -->
+  <section><div class="glow" style="--speed:.15"></div>
+    <div style="width:100%">
+      <h2>Live chart</h2>
+      <div class="chartbox"><iframe loading="lazy"
+        src="https://dexscreener.com/solana/REPLACE_ME?embed=1&theme=dark"
+        width="100%" height="100%" style="border:0"></iframe></div>
+      <p style="margin-top:1rem;font-size:.9rem;opacity:.8">DexScreener data</p>
+    </div>
+  </section>
+
+  <!-- TOKENOMICS -->
+  <section><div class="glow" style="--speed:.1"></div>
+    <div>
+      <h2>Tokenomics</h2>
+      <p>Total supply : 1 000 000 000 LOVE<br><br>Bonding curve : 80 %<br><br>Team/Marketing : 0 % (fair-launch)<br><br>
+         Liquidity : 12 000 $ + burn<br><br>Tax : 0 % — Solana</p>
+        <lottie-player class="lottie" src="assets/json/tokenomics.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+  </section>
+
+  <!-- HOLDERS -->
+  <section id="counter"><div class="glow" style="--speed:.08"></div>
+    <div><h2><span id="holders">134</span> lovers already aboard !</h2></div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta"><div class="glow" style="--speed:.05"></div>
+    <div>
+      <h2>Ready to pump ?</h2>
+      <a href="https://pump.fun/" target="_blank" class="btn alt">BUY 🚀</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <h3>Stay in loop</h3>
+    <form class="signup" action="https://formspree.io/f/yourID" method="POST">
+      <input type="email" name="email" placeholder="email" required>
+      <button type="submit">Notify</button>
+    </form>
+    <p style="margin-top:2rem;max-inline-size:500px;margin-inline:auto">
+      Disclaimer : $LOVE is a meme token, no intrinsic value nor expectation of profit. Gamble responsibly.
+    </p>
+  </footer>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const $ = s => document.querySelector(s);
+
+  /* COUNTDOWN */
+  const end = new Date(Date.UTC(2025,6,31,17));
+  const ids = ['d','h','m','s'];
+  setInterval(()=>{
+    const t=end-Date.now(); if(t<0) return;
+    const s=~~(t/1e3)%60, m=~~(t/6e4)%60,
+          h=~~(t/3.6e6)%24, d=~~(t/8.64e7);
+    [d,h,m,s].forEach((v,i)=>{
+      const el=$('#'+ids[i]); if(el) el.textContent=String(v).padStart(2,'0');
+    });
+  },1000);
+
+  /* THEME */
+  const themeBtn = $('#themeBtn');
+  const saved = localStorage.getItem('loveTheme');
+  if(saved) document.body.dataset.theme = saved;
+  themeBtn.textContent = document.body.dataset.theme==='light'?'☀':'☾';
+  themeBtn.onclick = () => {
+    const next = document.body.dataset.theme==='dark' ? 'light'
+               : document.body.dataset.theme==='light' ? 'disco'
+               : 'dark';
+    document.body.dataset.theme = next;
+    themeBtn.textContent = next==='light'?'☀':next==='disco'?'♫':'☾';
+    localStorage.setItem('loveTheme', next);
+  };
+
+  /* LOADER fade */
+gsap.to('#loader',{autoAlpha:0,duration:.6,delay:.1,onComplete(){
+  const l=document.getElementById('loader');
+  if(l) l.remove();           // <— plus aucun overlay qui bloque les clics
+}});
+
+  /* LENIS + SCROLLTRIGGER */
+  const lenis=new Lenis({smoothWheel:true});
+  requestAnimationFrame(function raf(t){lenis.raf(t);requestAnimationFrame(raf)});
+  gsap.registerPlugin(ScrollTrigger);
+  lenis.on('scroll',ScrollTrigger.update);
+  ScrollTrigger.scrollerProxy('#scroll',{
+    scrollTop(v){return arguments.length?lenis.scrollTo(v,0):lenis.scroll.instance.scroll.y},
+    getBoundingClientRect(){return{top:0,left:0,width:innerWidth,height:innerHeight}}
+  });
+
+  /* PARALLAX GLOW */
+  gsap.utils.toArray('.glow').forEach((g,i)=>
+    gsap.to(g,{y:innerHeight*.3*(.3-i*.03),scale:1.1+i*.05,ease:'none',
+      scrollTrigger:{trigger:g.parentElement,start:'top bottom',end:'bottom top',scrub:true}})
+  );
+
+  /* CARD REVEAL */
+  gsap.utils.toArray('.card').forEach((c,i)=>
+    gsap.from(c,{y:70,opacity:0,duration:.7,delay:i*.05,
+      scrollTrigger:{trigger:c,start:'top 90%'}})
+  );
+
+  /* CONFETTI buy */
+  const confetti = new JSConfetti();
+  $('#buyBtn').onclick = () => confetti.addConfetti({emojis:['💖','🚀','💸'],confettiNumber:60});
+
+  /* SLOT */
+  const reels=document.querySelectorAll('.reel'),
+        icons=['💖','🚀','💸','🍀','🎲'];
+  $('#spin').onclick = () => {
+    reels.forEach(r=>{r.textContent=icons[Math.random()*icons.length|0];r.classList.remove('win')});
+    if([...reels].every(r=>r.textContent===reels[0].textContent)){
+      reels.forEach(r=>r.classList.add('win'));
+      confetti.addConfetti({emojis:['🎉','💰','🥳'],confettiNumber:70});
+    }
+  };
+
+  /* HYPE BAR placeholder */
+  async function hype(){
+    try{
+      const MINT='REPLACE_ME';
+      const j=await fetch(`https://api.dexscreener.com/latest/dex/tokens/solana/${MINT}`).then(r=>r.json());
+      const p=j.pairs?.[0]||{};
+      ['price','lp','liveHolders'].forEach((id,i)=>
+        gsap.to('#'+id,{textContent:i===0?(+p.priceUsd||0).toFixed(6)
+                                   :i===1?Math.round(p.liquidity?.usd||0)
+                                   :p.holders||'--',
+                        duration:.4,snap:'textContent'}));
+    }catch{}
+  }
+  hype(); setInterval(hype,3e4);
+
+  /* HOLDERS count-up */
+  gsap.fromTo('#holders',{textContent:0},{textContent:5200,duration:3,snap:'textContent',
+    scrollTrigger:{trigger:'#counter',start:'top 80%',once:true}});
+
+  /* 3D tilt */
+  addEventListener('pointermove',e=>{
+    const x=(e.clientX/innerWidth-.5)*2, y=(e.clientY/innerHeight-.5)*2;
+    gsap.to('main',{rotationY:x*6,rotationX:-y*6,duration:.6,overwrite:'auto'});
+  });
+
+  /* WEBGL starfield */
+  const cvs=$('#space'),gl=cvs.getContext('webgl',{alpha:false});
+  function shader(src,t){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);return s}
+  const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`,
+        fs=`precision mediump float;uniform vec2 r;uniform float t;
+             float ns(in vec2 u){return fract(sin(dot(u,vec2(41.,289.)))*43758.5);}
+             void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/min(r.x,r.y);
+               float d=length(uv),a=atan(uv.y,uv.x),m=ns(vec2(a*4.,d*40.+t*.2));
+               float star=smoothstep(.002,.0,abs(fract(d*15.-m)-.5));
+               gl_FragColor=vec4(vec3(star),1.);} `;
+  const prog=gl.createProgram();
+  gl.attachShader(prog,shader(vs,gl.VERTEX_SHADER));
+  gl.attachShader(prog,shader(fs,gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(prog,'p');
+  gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const tLoc=gl.getUniformLocation(prog,'t'), rLoc=gl.getUniformLocation(prog,'r');
+  function resize(){
+    cvs.width=innerWidth; cvs.height=innerHeight;
+    gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);
+  }
+  resize(); addEventListener('resize',resize);
+  (function loop(e){
+    gl.uniform1f(tLoc,e*.0005);
+    gl.uniform2f(rLoc,cvs.width,cvs.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+    requestAnimationFrame(loop);
+  })(0);
+
+}); /* DOMContentLoaded */
+/* ---------- SLOT MINI-GAME ---------- */
+const reels = document.querySelectorAll('.reel'),
+      icons = ['💖','🚀','💸','🍀','🎲'],
+      spinBtn = document.getElementById('spin');
+
+spinBtn.addEventListener('click', () => {
+
+  // animation « secouée » des rouleaux
+  gsap.fromTo(reels,
+    {scale:1},
+    {scale:0.8, yoyo:true, repeat:1, duration:.12, stagger:.05}
+  );
+
+  // tirage aléatoire
+  reels.forEach(r=>{
+    r.textContent = icons[Math.random()*icons.length|0];
+    r.classList.remove('win');
+  });
+
+  // victoire ?
+  if([...reels].every(r=>r.textContent===reels[0].textContent)){
+    reels.forEach(r=>r.classList.add('win'));
+    confetti.addConfetti({emojis:['🎉','💰','🥳'], confettiNumber:70});
+  }
+});
+</script>
+</body>
+</html>
